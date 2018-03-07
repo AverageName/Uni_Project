@@ -5,22 +5,22 @@ using namespace std;
 using namespace std;
 Matrix::Matrix()
 {
-	rows = 1;
-	cols = 1;
-	allocSpace();
-	data[0][0] = 0;
+	this->rows = 1;
+	this->cols = 1;
+	this->allocSpace();
+	(this->data)[0][0] = 0;
 }
 
 Matrix::Matrix(double** _data, int _rows, int _cols)
 {
-	rows = _rows;
-	cols = _cols;
-	allocSpace();
+	this->rows = _rows;
+	this->cols = _cols;
+	this->allocSpace();
 	for (int i = 0; i < rows; ++i)
 	{
 		for (int j = 0; j < cols; ++j)
 		{
-			data[i][j] = _data[i][j];
+			(this->data)[i][j] = _data[i][j];
 		}
 	}
 
@@ -28,28 +28,28 @@ Matrix::Matrix(double** _data, int _rows, int _cols)
 
 Matrix::Matrix(int _rows, int _cols)
 {
-	rows = _rows;
-	cols = _cols;
-	allocSpace();
+	this->rows = _rows;
+	this->cols = _cols;
+	this->allocSpace();
 	for (int i = 0; i < rows; ++i)
 	{
 		for (int j = 0; j < cols; ++j)
 		{
-			data[i][j] = 0;
+			(this->data)[i][j] = 0;
 		}
 	}
 }
 
 Matrix::Matrix(const Matrix& matrix)
 {
-	rows = matrix.rows;
-	cols = matrix.cols;
-	allocSpace();
+	this->rows = matrix.rows;
+	this->cols = matrix.cols;
+	this->allocSpace();
 	for (int i = 0; i < rows; ++i)
 	{
 		for (int j = 0; j < cols; ++j)
 		{
-			data[i][j] = (matrix.data)[i][j];
+			(this->data)[i][j] = (matrix.data)[i][j];
 		}
 	}
 
@@ -60,10 +60,10 @@ Matrix::~Matrix()
 	cout << "destructor" << endl;
 	for (int i = 0; i < rows; ++i)
 	{
-		delete[] data[i];
+		delete[] (this->data)[i];
 
 	}
-	delete[] data;
+	delete[] (this->data);
 
 
 }
@@ -117,13 +117,13 @@ Matrix& Matrix::operator=(const Matrix& matrix)
 	{
 		for (int i = 0; i < rows; ++i)
 		{
-			delete[] data[i];
+			delete[] (this->data)[i];
 		}
-		delete[] data;
+		delete[] this->data;
 
-		rows = matrix.rows;
-		cols = matrix.cols;
-		allocSpace();
+		this->rows = matrix.rows;
+		this->cols = matrix.cols;
+		this->allocSpace();
 
 	}
 
@@ -131,7 +131,7 @@ Matrix& Matrix::operator=(const Matrix& matrix)
 	{
 		for (int j = 0; j < cols; ++j)
 		{
-			data[i][j] = matrix.data[i][j];
+			(this->data)[i][j] = matrix.data[i][j];
 		}
 	}
 	return *this;
