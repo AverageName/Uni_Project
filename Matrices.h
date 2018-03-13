@@ -26,7 +26,10 @@ public:
 	Matrix& operator-=(const Matrix& matrix);
 	Matrix& Matrix::transpose(void);
 	friend Matrix operator*(const Matrix&,const double);
+	double sum(void);
 	friend Matrix back_prop(Matrix& first_matrix, Matrix& weights, Matrix& true_labels,double);
+	friend void net_train(Matrix& first_matrix, Matrix& weights, Matrix& true_labels, double learning_rate, int num_iter);
+	friend double net_loss(Matrix& first_matrix, Matrix& weights, Matrix& true_labels);
 
 
 
