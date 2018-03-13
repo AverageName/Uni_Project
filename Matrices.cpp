@@ -79,6 +79,8 @@ void Matrix::allocSpace()
 	}
 }
 
+
+
 Matrix & Matrix::operator*=(const Matrix& matrix)
 {
 	Matrix tmp_2(this->rows, matrix.cols);
@@ -181,17 +183,61 @@ Matrix operator+(const Matrix& matrix, double numeric)
 }
 
 
+Matrix & Matrix::operator-=(const Matrix & matrix)
+{
+	for (int i = 0; i < (this->rows); ++i)
+	{
+		for (int j = 0; j < (this->cols); ++j)
+		{
+			(this->data)[i][j] -= matrix.data[i][j];
+		}
+	}
+	return *this;
+}
 
+Matrix operator*(const Matrix& matrix,const double numeric)
+{
+	Matrix tmp = matrix;
+	for (int i = 0; i < matrix.rows; ++i)
+	{
+		for (int j = 0; j < matrix.cols; ++j)
+		{
+			tmp.data[i][j] *= numeric;
+		}
+	}
+	return tmp;
+}
 
-
-
+Matrix& Matrix::transpose(void)
+{
+	Matrix tmp(this->cols, this->rows);
+	for (int i = 0; i < this->cols; ++i)
+	{
+		for (int j = 0; j < this->rows; ++j)
+		{
+			tmp.data[i][j] = (this->data)[j][i];
+		}
+	}
+	return (*this = tmp);
+}
 
 
 
 Matrix forward_prop(const Matrix& first_matrix, const Matrix& weights)
 {
-	Matrix res = first_matrix*weights;
-	return res;
+	return (first_matrix*weights);
 }
 
-//Matrix back_prop(const Matrix&
+Matrix back_prop(Matrix& first_matrix, Matrix& weights,Matrix& true_labels,double learning_rate)
+{
+	Matrix labels = forward_prop(first_matrix, weights);
+	Matrix tmp = first_matrix;
+	Matrix grad = ((tmp.transpose())*(labels -= true_labels)) * (1.0 / first_matrix.rows) ;
+	weights -= grad*learning_rate;
+	return weights;
+}
+
+//void net_train(Matrix& first_matrix, Matrix& weights, Matrix& true_labels, double learning_rate)
+//{
+//
+//}
