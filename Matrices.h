@@ -21,7 +21,11 @@ public:
 	Matrix& operator*=(const Matrix&);
 	Matrix& operator+=(const Matrix&);
 	void allocSpace();
+	friend Matrix operator+(const Matrix&,double);
+	friend Matrix forward_prop(const Matrix&, const Matrix&);
 
 
 
 };
+
+
