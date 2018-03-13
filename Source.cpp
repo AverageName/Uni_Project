@@ -43,6 +43,8 @@ int main()
 	cout << kek2 << endl;
 	cout << kek5 << endl;
 	cout << forward_prop(kek1,kek2) << endl;
+	cout << net_loss(kek1, kek2, kek5) << endl;
+	net_train(kek1, kek2, kek5, 0.05, 25);
 
 	cout << back_prop(kek1,kek2,kek5,0.1) << endl;
 
