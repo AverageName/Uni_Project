@@ -23,6 +23,10 @@ public:
 	void allocSpace();
 	friend Matrix operator+(const Matrix&,double);
 	friend Matrix forward_prop(const Matrix&, const Matrix&);
+	Matrix& operator-=(const Matrix& matrix);
+	Matrix& Matrix::transpose(void);
+	friend Matrix operator*(const Matrix&,const double);
+	friend Matrix back_prop(Matrix& first_matrix, Matrix& weights, Matrix& true_labels,double);
 
 
 
