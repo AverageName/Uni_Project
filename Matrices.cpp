@@ -57,7 +57,7 @@ Matrix::Matrix(const Matrix& matrix)
 
 Matrix::~Matrix()
 {
-	cout << "destructor" << endl;
+	/*cout << "destructor" << endl;*/
 	for (int i = 0; i < (this->rows); ++i)
 	{
 		delete[] (this->data)[i];
@@ -237,7 +237,33 @@ Matrix back_prop(Matrix& first_matrix, Matrix& weights,Matrix& true_labels,doubl
 	return weights;
 }
 
-//void net_train(Matrix& first_matrix, Matrix& weights, Matrix& true_labels, double learning_rate)
-//{
-//
-//}
+double Matrix::sum()
+{
+	double sum = 0;
+	for (int i = 0; i < this->rows; ++i)
+	{
+		for (int j = 0; j < this->cols; ++j)
+		{
+			sum += (this->data)[i][j];
+		}
+	}
+	return sum;
+}
+
+double net_loss(Matrix& first_matrix, Matrix& weights, Matrix& true_labels)
+{
+	Matrix labels = forward_prop(first_matrix, weights);
+	double loss = (1.0 / (2 * first_matrix.rows))*(labels -= true_labels).sum();
+	return abs(loss);
+}
+
+void net_train(Matrix& first_matrix, Matrix& weights, Matrix& true_labels, double learning_rate,int num_iter)
+{
+	for (int i = 0; i < num_iter; ++i)
+	{
+		cout << "Iter number: " << i << endl;
+		cout << "Current loss: " << net_loss(first_matrix, weights, true_labels) << endl;
+		weights = back_prop(first_matrix, weights, true_labels, learning_rate);
+	}
+
+}
