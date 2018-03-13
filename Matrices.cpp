@@ -58,7 +58,7 @@ Matrix::Matrix(const Matrix& matrix)
 Matrix::~Matrix()
 {
 	cout << "destructor" << endl;
-	for (int i = 0; i < rows; ++i)
+	for (int i = 0; i < (this->rows); ++i)
 	{
 		delete[] (this->data)[i];
 
@@ -70,54 +70,46 @@ Matrix::~Matrix()
 
 void Matrix::allocSpace()
 {
-	data = new double*[rows];
+	this->data = new double*[rows];
 	for (int i = 0; i < rows; ++i)
 	{
 			
-		data[i] = new double[cols];
+		(this->data)[i] = new double[cols];
 
 	}
 }
 
-ostream & operator<<(ostream & out, const Matrix& matrix)
+Matrix & Matrix::operator*=(const Matrix& matrix)
 {
-	for (int i = 0; i < matrix.rows; ++i)
+	Matrix tmp_2(this->rows, matrix.cols);
+	for (int i = 0; i < this->rows; ++i)
 	{
 		for (int j = 0; j < matrix.cols; ++j)
 		{
-			out << matrix.data[i][j] << "\t";
+			for (int k = 0; k < matrix.rows; ++k)
+			{
+				tmp_2.data[i][j] += (this->data)[i][k] * matrix.data[k][j];
+			}
 		}
-		out << endl;
 	}
-	return out;
+	return (*this = tmp_2);
 }
 
-Matrix operator+(const Matrix& first_matrix, const Matrix& second_matrix)
-{
-	Matrix tmp = first_matrix;
-	return(tmp += second_matrix);
-}
-
-Matrix operator*(const Matrix& first_matrix, const Matrix& second_matrix)
-{
-	Matrix tmp = first_matrix;
-	return (tmp*=second_matrix);
-}
 
 Matrix& Matrix::operator=(const Matrix& matrix)
 {
 	if (this == &matrix)
 	{
-		
+
 		return *this;
-	
+
 	}
 
 	if ((rows != matrix.rows) || (cols != matrix.cols))
 	{
-		for (int i = 0; i < rows; ++i)
+		for (int i = 0; i < this->rows; ++i)
 		{
-			delete[] (this->data)[i];
+			delete[](this->data)[i];
 		}
 		delete[] this->data;
 
@@ -137,34 +129,69 @@ Matrix& Matrix::operator=(const Matrix& matrix)
 	return *this;
 }
 
-Matrix & Matrix::operator*=(const Matrix& matrix)
-{	
-	cols = matrix.cols;
-	Matrix tmp(rows, cols);
-	for (int i = 0; i < rows; ++i)
-	{
-		for (int j = 0; j < cols; ++j)
-		{
-			for (int k = 0; k < matrix.rows; ++k)
-			{
-				tmp.data[i][j] += data[i][k] * matrix.data[k][j];
-			}
-		}
-	}
-	*this = tmp;
-	return *this;
-}
-
 Matrix& Matrix::operator+=(const Matrix& matrix)
 {
 	for (int i = 0; i < rows; ++i)
 	{
 		for (int j = 0; j < cols; ++j)
 		{
-			data[i][j] += matrix.data[i][j];
+			(this->data)[i][j] += matrix.data[i][j];
 		}
 	}
 	return *this;
 }
 
+ostream & operator<<(ostream & out, const Matrix& matrix)
+{
+	for (int i = 0; i < matrix.rows; ++i)
+	{
+		for (int j = 0; j < matrix.cols; ++j)
+		{
+			out << matrix.data[i][j] << "\t";
+		}
+		out << endl;
+	}
+	return out;
+}
 
+Matrix operator+(const Matrix& first_matrix, const Matrix& second_matrix)
+{
+	Matrix tmp(first_matrix);
+	return(tmp += second_matrix);
+}
+
+Matrix operator*(const Matrix& first_matrix, const Matrix& second_matrix)
+{
+	Matrix tmp(first_matrix);
+	return (tmp*=second_matrix);
+}
+
+Matrix operator+(const Matrix& matrix, double numeric)
+{
+	Matrix tmp = matrix;
+	for (int i = 0; i < tmp.rows; ++i)
+	{
+		for (int j = 0; j < tmp.cols; ++j)
+		{
+			(tmp.data)[i][j] = (tmp.data)[i][j] + numeric;
+		}
+	}
+
+	return tmp;
+}
+
+
+
+
+
+
+
+
+
+Matrix forward_prop(const Matrix& first_matrix, const Matrix& weights)
+{
+	Matrix res = first_matrix*weights;
+	return res;
+}
+
+//Matrix back_prop(const Matrix&
