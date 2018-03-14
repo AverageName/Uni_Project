@@ -34,6 +34,7 @@ int main()
 			kek4[i][j] = i * 3 + 1;
 		}
 	}
+	double kek6 = 0.5;
 
 	Matrix kek1(kek, 4, 3);
 	Matrix kek2(kek3, 3, 1);
@@ -42,11 +43,12 @@ int main()
 	cout << kek1 << endl;
 	cout << kek2 << endl;
 	cout << kek5 << endl;
-	cout << forward_prop(kek1,kek2) << endl;
-	cout << net_loss(kek1, kek2, kek5) << endl;
-	net_train(kek1, kek2, kek5, 0.05, 25);
+	cout << forward_prop(kek1,kek2,kek6) << endl;
+	cout << net_loss(kek1, kek2, kek5,kek6) << endl;
+	net_train(kek1, kek2, kek5, 0.1,kek6,100);
+	/*cout << kek1.pow_elem(2) << endl;*/
 
-	cout << back_prop(kek1,kek2,kek5,0.1) << endl;
+	cout << forward_prop(kek1,kek2,kek6) << endl;
 
 	for (int i = 0; i < 4; ++i)
 	{
