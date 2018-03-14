@@ -1,8 +1,10 @@
 #include "Matrices.h"
-using namespace std;
 #include <iostream>
-
+#include <cmath>
 using namespace std;
+
+
+//Constructors
 Matrix::Matrix()
 {
 	this->rows = 1;
@@ -10,6 +12,7 @@ Matrix::Matrix()
 	this->allocSpace();
 	(this->data)[0][0] = 0;
 }
+
 
 Matrix::Matrix(double** _data, int _rows, int _cols)
 {
@@ -26,6 +29,7 @@ Matrix::Matrix(double** _data, int _rows, int _cols)
 
 }
 
+
 Matrix::Matrix(int _rows, int _cols)
 {
 	this->rows = _rows;
@@ -39,6 +43,7 @@ Matrix::Matrix(int _rows, int _cols)
 		}
 	}
 }
+
 
 Matrix::Matrix(const Matrix& matrix)
 {
@@ -55,6 +60,8 @@ Matrix::Matrix(const Matrix& matrix)
 
 }
 
+
+//Destructor
 Matrix::~Matrix()
 {
 	/*cout << "destructor" << endl;*/
@@ -68,6 +75,8 @@ Matrix::~Matrix()
 
 }
 
+
+//Space allocation
 void Matrix::allocSpace()
 {
 	this->data = new double*[rows];
@@ -80,24 +89,7 @@ void Matrix::allocSpace()
 }
 
 
-
-Matrix & Matrix::operator*=(const Matrix& matrix)
-{
-	Matrix tmp_2(this->rows, matrix.cols);
-	for (int i = 0; i < this->rows; ++i)
-	{
-		for (int j = 0; j < matrix.cols; ++j)
-		{
-			for (int k = 0; k < matrix.rows; ++k)
-			{
-				tmp_2.data[i][j] += (this->data)[i][k] * matrix.data[k][j];
-			}
-		}
-	}
-	return (*this = tmp_2);
-}
-
-
+//Operator overloading
 Matrix& Matrix::operator=(const Matrix& matrix)
 {
 	if (this == &matrix)
@@ -131,6 +123,7 @@ Matrix& Matrix::operator=(const Matrix& matrix)
 	return *this;
 }
 
+
 Matrix& Matrix::operator+=(const Matrix& matrix)
 {
 	for (int i = 0; i < rows; ++i)
@@ -143,18 +136,36 @@ Matrix& Matrix::operator+=(const Matrix& matrix)
 	return *this;
 }
 
-ostream & operator<<(ostream & out, const Matrix& matrix)
+
+Matrix & Matrix::operator-=(const Matrix & matrix)
 {
-	for (int i = 0; i < matrix.rows; ++i)
+	for (int i = 0; i < (this->rows); ++i)
+	{
+		for (int j = 0; j < (this->cols); ++j)
+		{
+			(this->data)[i][j] -= matrix.data[i][j];
+		}
+	}
+	return *this;
+}
+
+
+Matrix & Matrix::operator*=(const Matrix& matrix)
+{
+	Matrix tmp_2(this->rows, matrix.cols);
+	for (int i = 0; i < this->rows; ++i)
 	{
 		for (int j = 0; j < matrix.cols; ++j)
 		{
-			out << matrix.data[i][j] << "\t";
+			for (int k = 0; k < matrix.rows; ++k)
+			{
+				tmp_2.data[i][j] += (this->data)[i][k] * matrix.data[k][j];
+			}
 		}
-		out << endl;
 	}
-	return out;
+	return (*this = tmp_2);
 }
+
 
 Matrix operator+(const Matrix& first_matrix, const Matrix& second_matrix)
 {
@@ -162,11 +173,20 @@ Matrix operator+(const Matrix& first_matrix, const Matrix& second_matrix)
 	return(tmp += second_matrix);
 }
 
+
+Matrix operator-(const Matrix& first_matrix, const Matrix& second_matrix)
+{
+	Matrix tmp(first_matrix);
+	return (tmp -= second_matrix);
+}
+
+
 Matrix operator*(const Matrix& first_matrix, const Matrix& second_matrix)
 {
 	Matrix tmp(first_matrix);
-	return (tmp*=second_matrix);
+	return (tmp *= second_matrix);
 }
+
 
 Matrix operator+(const Matrix& matrix, double numeric)
 {
@@ -183,19 +203,7 @@ Matrix operator+(const Matrix& matrix, double numeric)
 }
 
 
-Matrix & Matrix::operator-=(const Matrix & matrix)
-{
-	for (int i = 0; i < (this->rows); ++i)
-	{
-		for (int j = 0; j < (this->cols); ++j)
-		{
-			(this->data)[i][j] -= matrix.data[i][j];
-		}
-	}
-	return *this;
-}
-
-Matrix operator*(const Matrix& matrix,const double numeric)
+Matrix operator*(const Matrix& matrix, const double numeric)
 {
 	Matrix tmp = matrix;
 	for (int i = 0; i < matrix.rows; ++i)
@@ -208,6 +216,22 @@ Matrix operator*(const Matrix& matrix,const double numeric)
 	return tmp;
 }
 
+
+ostream & operator<<(ostream & out, const Matrix& matrix)
+{
+	for (int i = 0; i < matrix.rows; ++i)
+	{
+		for (int j = 0; j < matrix.cols; ++j)
+		{
+			out << matrix.data[i][j] << "\t";
+		}
+		out << endl;
+	}
+	return out;
+}
+
+
+//Matrix functions
 Matrix& Matrix::transpose(void)
 {
 	Matrix tmp(this->cols, this->rows);
@@ -222,20 +246,18 @@ Matrix& Matrix::transpose(void)
 }
 
 
-
-Matrix forward_prop(const Matrix& first_matrix, const Matrix& weights)
+Matrix& Matrix::pow_elem(int degree)
 {
-	return (first_matrix*weights);
+	for (int i = 0; i < this->rows; ++i)
+	{
+		for (int j = 0; j < this->cols; ++j)
+		{
+			(this->data)[i][j] = pow((this->data)[i][j], degree);
+		}
+	}
+	return *this;
 }
 
-Matrix back_prop(Matrix& first_matrix, Matrix& weights,Matrix& true_labels,double learning_rate)
-{
-	Matrix labels = forward_prop(first_matrix, weights);
-	Matrix tmp = first_matrix;
-	Matrix grad = ((tmp.transpose())*(labels -= true_labels)) * (1.0 / first_matrix.rows) ;
-	weights -= grad*learning_rate;
-	return weights;
-}
 
 double Matrix::sum()
 {
@@ -250,20 +272,41 @@ double Matrix::sum()
 	return sum;
 }
 
-double net_loss(Matrix& first_matrix, Matrix& weights, Matrix& true_labels)
+
+//Net functions
+Matrix forward_prop(const Matrix& first_matrix, const Matrix& weights, double bias)
 {
-	Matrix labels = forward_prop(first_matrix, weights);
-	double loss = (1.0 / (2 * first_matrix.rows))*(labels -= true_labels).sum();
+	return ((first_matrix*weights)+bias);
+}
+
+
+double net_loss(Matrix& first_matrix, Matrix& weights, Matrix& true_labels, double& bias)
+{
+	Matrix labels = forward_prop(first_matrix, weights, bias);
+	double loss = (1.0 / (2 * first_matrix.rows))*(((labels - true_labels).pow_elem(2)).sum());
 	return abs(loss);
 }
 
-void net_train(Matrix& first_matrix, Matrix& weights, Matrix& true_labels, double learning_rate,int num_iter)
+
+void back_prop(Matrix& first_matrix, Matrix& weights,Matrix& true_labels,double learning_rate,double& bias)
+{
+	cout << bias << endl;
+	Matrix labels = forward_prop(first_matrix, weights,bias);
+	Matrix tmp = first_matrix;
+	Matrix grad = ((tmp.transpose())*(labels - true_labels)) * (1.0 / first_matrix.rows) ;
+	double grad_bias = (1.0 / first_matrix.rows)*((labels - true_labels).sum());
+	weights -= grad*learning_rate;
+	bias -= grad_bias*learning_rate;
+}
+
+
+void net_train(Matrix& first_matrix, Matrix& weights, Matrix& true_labels, double learning_rate,double& bias,int num_iter)
 {
 	for (int i = 0; i < num_iter; ++i)
 	{
 		cout << "Iter number: " << i << endl;
-		cout << "Current loss: " << net_loss(first_matrix, weights, true_labels) << endl;
-		weights = back_prop(first_matrix, weights, true_labels, learning_rate);
+		cout << "Current loss: " << net_loss(first_matrix, weights, true_labels,bias) << endl;
+		back_prop(first_matrix, weights, true_labels, learning_rate,bias);
 	}
 
 }
