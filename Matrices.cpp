@@ -1,6 +1,7 @@
 #include "Matrices.h"
 #include <iostream>
 #include <cmath>
+#include <vector>
 using namespace std;
 
 
@@ -89,7 +90,7 @@ void Matrix::allocSpace()
 }
 
 
-//Operator overloading
+//Overloading operators
 Matrix& Matrix::operator=(const Matrix& matrix)
 {
 	if (this == &matrix)
@@ -283,7 +284,7 @@ Matrix forward_prop(const Matrix& first_matrix, const Matrix& weights, double bi
 double net_loss(Matrix& first_matrix, Matrix& weights, Matrix& true_labels, double& bias)
 {
 	Matrix labels = forward_prop(first_matrix, weights, bias);
-	double loss = (1.0 / (2 * first_matrix.rows))*(((labels - true_labels).pow_elem(2)).sum());
+	double loss = (1.0 / (2 * labels.rows))*(((labels - true_labels).pow_elem(2)).sum());
 	return abs(loss);
 }
 
@@ -310,3 +311,34 @@ void net_train(Matrix& first_matrix, Matrix& weights, Matrix& true_labels, doubl
 	}
 
 }
+
+//Matrix max(const Matrix& matrix)
+//{
+//	
+//	for (int i = 0; i < matrix.rows; ++i)
+//	{
+//		for (int j = 0; j < matrix.cols; ++j)
+//		{
+//			if (tmp[i] < matrix.data[i][j])
+//			{
+//				tmp[i] = matrix.data[i][j];
+// 			}
+//		}
+//	}
+//	return tmp;
+//}
+//
+//ostream& operator<<(ostream& out, double* vec)
+//{
+//	for 
+//}
+
+//Matrix softmax(const Matrix& matrix)
+//{
+//
+//}
+
+
+
+
+
