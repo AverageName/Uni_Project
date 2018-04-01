@@ -40,15 +40,20 @@ int main()
 	Matrix kek2(kek3, 3, 1);
 	Matrix kek5(kek4, 4, 1);
 
-	cout << kek1 << endl;
-	cout << kek2 << endl;
-	cout << kek5 << endl;
-	cout << forward_prop(kek1,kek2,kek6) << endl;
-	cout << net_loss(kek1, kek2, kek5,kek6) << endl;
-	net_train(kek1, kek2, kek5, 0.1,kek6,100);
-	/*cout << kek1.pow_elem(2) << endl;*/
+	//cout << kek1 << endl;
+	//cout << kek2 << endl;
+	//cout << kek5 << endl;
+	//cout << forward_prop(kek1,kek2,kek6) << endl;
+	//cout << net_loss(kek1, kek2, kek5,kek6) << endl;
+	//net_train(kek1, kek2, kek5, 0.1,kek6,100);
+	///*cout << kek1.pow_elem(2) << endl;*/
 
-	cout << forward_prop(kek1,kek2,kek6) << endl;
+	//cout << forward_prop(kek1,kek2,kek6) << endl;
+	/*cout << kek1.max << endl;*/
+	Sequential net;
+	Linear layer(3, 1, 0.5);
+	net.add(layer);
+	cout << net.forward(kek1) << endl;
 
 	for (int i = 0; i < 4; ++i)
 	{
